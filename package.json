@@ -1,0 +1,27 @@
+{
+  "name": "exbox",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": "lukeed/ExBox",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Luke Edwards",
+    "email": "luke@lukeed.com",
+    "url": "https://lukeed.com"
+  },
+  "keywords": [
+    "box",
+    "cli-app",
+    "cli",
+    "config",
+    "development",
+    "elixir",
+    "erlang",
+    "vagrant",
+    "virtualbox"
+  ]
+}
