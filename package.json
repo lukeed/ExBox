@@ -26,6 +26,7 @@
     "elixir",
     "erlang",
     "vagrant",
-    "virtualbox"
+    "virtualbox",
+    "vm"
   ]
 }
