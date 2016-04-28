@@ -36,7 +36,7 @@ cli
 	.description('Map a Domain to a VM directory')
 	.option('--ssl', '     Enable SSL on this domain')
 	.action(function (site, dir, opts) {
-		const ssl = opts.ssl || false;
+		var ssl = opts.ssl || false;
 		debug('domain: use ssl: %s. site: %s. dir: %s.', ssl, site, dir);
 
 		//
