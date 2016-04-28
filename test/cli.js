@@ -60,3 +60,23 @@ test('exbox.help: `domain --help` ok', async t => {
 	const out = await execa.stdout(cli, ['domain', '--help']);
 	t.regex(out, /Examples:/);
 });
+
+test('exbox.init', async t => {
+	const out = await execa.stdout(cli, ['init']);
+	t.is(out, 'inside init!');
+});
+
+test('exbox.domain: requires `site`', async t => {
+	const err = await t.throws(execa.stdout(cli, ['domain']));
+	t.regex(err.message, /error: missing required argument/);
+});
+
+test('exbox.domain: requires `dir`', async t => {
+	const err = await t.throws(execa.stdout(cli, ['domain', site]));
+	t.regex(err.message, /error: missing required argument/);
+});
+
+test('exbox.domain: something', async t => {
+	const out = await execa.stdout(cli, ['domain', site, dir]);
+	t.is(out, `[DEBUG] domain: use ssl: false. site: ${site}. dir: ${dir}.`);
+});
