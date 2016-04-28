@@ -29,6 +29,11 @@
     "virtualbox",
     "vm"
   ],
+  "dependencies": {
+    "meow": "^3.7.0",
+    "update-notifier": "^0.6.3",
+    "yaml": "^0.3.0"
+  },
   "devDependencies": {
     "ava": "^0.14.0",
     "execa": "^0.4.0",
