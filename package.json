@@ -1,7 +1,7 @@
 {
   "name": "exbox",
   "version": "0.0.0",
-  "description": "",
+  "description": "A reusable, pre-packaged Vagrant box for developing Elixir applications",
   "main": "src/index.js",
   "files": [
     "scripts",
