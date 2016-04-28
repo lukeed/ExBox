@@ -2,10 +2,10 @@
   "name": "exbox",
   "version": "0.0.0",
   "description": "A reusable, pre-packaged Vagrant box for developing Elixir applications",
-  "main": "src/index.js",
+  "bin": "exbox.js",
   "files": [
     "scripts",
-    "src"
+    "*.js"
   ],
   "license": "MIT",
   "repository": "lukeed/ExBox",
@@ -30,7 +30,8 @@
     "vm"
   ],
   "dependencies": {
-    "meow": "^3.7.0",
+    "commander": "^2.9.0",
+    "read-pkg": "^1.1.0",
     "update-notifier": "^0.6.3",
     "yaml": "^0.3.0"
   },
