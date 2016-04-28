@@ -28,3 +28,27 @@ test('exbox.version: `-V` ok', async t => {
 test('exbox.version: `-v` throws', async t => {
 	t.throws(execa.stdout(cli, ['-v']));
 });
+
+test('exbox.help: `-h` ok', async t => {
+	const out = await execa.stdout(cli, ['-h']);
+	t.regex(out, /Usage: exbox <command>/);
+});
+
+test('exbox.help: `--help` ok', async t => {
+	const out = await execa.stdout(cli, ['--help']);
+	t.regex(out, /Usage: exbox <command>/);
+});
+
+test('exbox.help: `-H` throws', async t => {
+	t.throws(execa.stdout(cli, ['-H']));
+});
+
+test('exbox.help: `init --help` ok', async t => {
+	const out = await execa.stdout(cli, ['init', '--help']);
+	t.regex(out, /Usage: init/);
+});
+
+test('exbox.help: `domain --help` ok', async t => {
+	const out = await execa.stdout(cli, ['domain', '--help']);
+	t.regex(out, /Examples:/);
+});
