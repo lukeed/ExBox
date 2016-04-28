@@ -10,6 +10,14 @@ global.Promise = Promise;
 const cli = resolve('../exbox.js');
 const ver = readPkg.sync('..').version;
 
+const site = 'test.app';
+const dir = 'test/dir';
+
+// turn on DEBUG messages
+test.before(() => {
+	process.env.DEBUG = 'exbox';
+});
+
 test('dummy test', async t => {
 	const filepath = await write('console.log(0)\n', 'x.js');
 	t.is(fs.readFileSync(filepath, 'utf8').trim(), 'console.log(0)');
