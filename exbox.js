@@ -39,23 +39,24 @@ cli
 		var ssl = opts.ssl || false;
 		debug('domain: use ssl: %s. site: %s. dir: %s.', ssl, site, dir);
 		//
-	}).on('--help', addExamples.bind(null, [
-		'$ exbox domain phoenix.dev /home/vagrant/code/phoenix',
-		'$ exbox domain hello-world.app /home/vagrant/code/hello-world',
-		'$ exbox domain --ssl secure.app /home/vagrant/code/secure',
-		'$ exbox domain secure.app /home/vagrant/code/secure --ssl'
+	}).on('--help', addExamples.bind(null, 'domain', [
+		'phoenix.dev /home/vagrant/code/phoenix',
+		'hello-world.app /home/vagrant/code/hello-world',
+		'--ssl secure.app /home/vagrant/code/secure',
+		'secure.app /home/vagrant/code/secure --ssl'
 	]));
 
 cli.parse(process.argv);
 
 /**
  * Log examples to the Console, with formatting
- * @param {Array} arr
+ * @param {String} cmd    The name of the command in question
+ * @param {Array} arr     An array of example usages
  */
-function addExamples(arr) {
+function addExamples(cmd, arr) {
 	console.log('  Examples: \n');
 	arr.forEach(function (el) {
-		console.log('    ' + el);
+		console.log(['    $ exbox', cmd, el].join(' '));
 	});
 	console.log();
 }
