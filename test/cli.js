@@ -12,6 +12,7 @@ const ver = readPkg.sync('..').version;
 
 const site = 'test.app';
 const dir = 'test/dir';
+const local = '~/local';
 
 // turn on DEBUG messages
 test.before(() => {
@@ -76,7 +77,22 @@ test('exbox.domain: requires `dir`', async t => {
 	t.regex(err.message, /error: missing required argument/);
 });
 
-test('exbox.domain: something', async t => {
+test('exbox.domain: log success', async t => {
 	const out = await execa.stdout(cli, ['domain', site, dir]);
 	t.is(out, `[DEBUG] domain: use ssl: false. site: ${site}. dir: ${dir}.`);
+});
+
+test('exbox.folder: requires `local`', async t => {
+	const err = await t.throws(execa.stdout(cli, ['folder']));
+	t.regex(err.message, /error: missing required argument/);
+});
+
+test('exbox.folder: requires `dir`', async t => {
+	const err = await t.throws(execa.stdout(cli, ['folder', local]));
+	t.regex(err.message, /error: missing required argument/);
+});
+
+test('exbox.folder: log success', async t => {
+	const out = await execa.stdout(cli, ['folder', local, dir]);
+	t.is(out, `[DEBUG] folder: local: ${local}. dir: ${dir}.`);
 });
