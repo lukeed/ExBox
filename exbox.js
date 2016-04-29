@@ -46,6 +46,17 @@ cli
 		'secure.app /home/vagrant/code/secure --ssl'
 	]));
 
+cli
+	.command('folder <local> <dir>')
+	.description('Map a local directory to a VM directory')
+	.usage('<local> <dir>') // no options
+	.action(function (local, dir) {
+		debug('folder: local: %s. dir: %s.', local, dir);
+	}).on('--help', addExamples.bind(null, 'folder', [
+		'~/code/project /home/vagrant/code/project',
+		'~/code/another/project /home/vagrant/code/project2'
+	]));
+
 cli.parse(process.argv);
 
 /**
