@@ -38,16 +38,24 @@ cli
 	.action(function (site, dir, opts) {
 		var ssl = opts.ssl || false;
 		debug('domain: use ssl: %s. site: %s. dir: %s.', ssl, site, dir);
-
 		//
-	}).on('--help', function () {
-		console.log('  Examples:');
-		console.log();
-		console.log('    $ exbox domain phoenix.dev /home/vagrant/code/phoenix');
-		console.log('    $ exbox domain hello-world.app /home/vagrant/code/hello-world');
-		console.log('    $ exbox domain --ssl secure.app /home/vagrant/code/secure');
-		console.log('    $ exbox domain secure.app /home/vagrant/code/secure --ssl');
-		console.log();
-	});
+	}).on('--help', addExamples.bind(null, [
+		'$ exbox domain phoenix.dev /home/vagrant/code/phoenix',
+		'$ exbox domain hello-world.app /home/vagrant/code/hello-world',
+		'$ exbox domain --ssl secure.app /home/vagrant/code/secure',
+		'$ exbox domain secure.app /home/vagrant/code/secure --ssl'
+	]));
 
 cli.parse(process.argv);
+
+/**
+ * Log examples to the Console, with formatting
+ * @param {Array} arr
+ */
+function addExamples(arr) {
+	console.log('  Examples: \n');
+	arr.forEach(function (el) {
+		console.log('    ' + el);
+	});
+	console.log();
+}
