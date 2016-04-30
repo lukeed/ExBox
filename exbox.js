@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 'use strict';
 
+// var fs = require('fs');
 var path = require('path');
+var child = require('child_process');
 // var osenv = require('osenv');
 var cli = require('commander');
 var readPkg = require('read-pkg');
-var child = require('child_process');
 var notifier = require('update-notifier');
 
 // var homedir = path.join(osenv.home(), process.env.EXBOXTEMP || '.exbox');
 var homedir = path.join(__dirname, process.env.EXBOXTEMP || '.exbox');
+// var xconfig = path.join(homedir, 'ExBox.yaml');
 
 // up to date?
 var pkg = readPkg.sync(__dirname);
@@ -35,7 +37,15 @@ cli
 	.usage(' ') // no options
 	.action(function () {
 		debug('initializing ExBox!');
+
+		// create `.exbox` home directory
 		child.execSync(['mkdir', '-p', homedir].join(' '));
+
+		// copy files to `.exbox`
+		var stubs = path.join(__dirname, 'stubs');
+		['ExBox.yaml', 'after.sh', 'aliases'].forEach(function (file) {
+			child.exec(['cp', '-i', path.join(stubs, file), homedir].join(' '));
+		});
 	});
 
 cli
