@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 'use strict';
 
+var path = require('path');
+// var osenv = require('osenv');
 var cli = require('commander');
 var readPkg = require('read-pkg');
 var notifier = require('update-notifier');
+
+// var homedir = path.join(osenv.home(), process.env.EXBOXTEMP || '.exbox');
+var homedir = path.join(__dirname, process.env.EXBOXTEMP || '.exbox');
 
 // up to date?
 var pkg = readPkg.sync(__dirname);

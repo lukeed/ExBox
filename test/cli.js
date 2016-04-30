@@ -17,6 +17,7 @@ const local = '~/local';
 // turn on DEBUG messages
 test.before(() => {
 	process.env.DEBUG = 'exbox';
+	process.env.EXBOXTEMP = 'temp-exbox-home';
 });
 
 test('dummy test', async t => {
