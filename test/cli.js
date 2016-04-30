@@ -68,9 +68,14 @@ test('exbox.help: `domain --help` ok', async t => {
 	t.regex(out, /Examples:/);
 });
 
-test('exbox.init: debugger', async t => {
+test('exbox.init', async t => {
 	const out = await execa.stdout(cli, ['init']);
-	t.is(out, '[DEBUG] initializing ExBox!');
+	t.is(out, '[DEBUG] initializing ExBox!', 'debugger');
+
+	t.true(fs.existsSync(HOME), '`homedir` exists');
+
+	const files = fs.readdirSync(HOME);
+	t.true(files.length > 1, '`homedir` has files');
 });
 
 test('exbox.domain: requires `site`', async t => {
