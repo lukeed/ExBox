@@ -15,15 +15,14 @@ const site = 'test.app';
 const dir = 'test/dir';
 const local = '~/local';
 
+const TMP = '.tmp';
+const HOME = resolve(__dirname, '..', TMP);
+
 // turn on DEBUG messages
 test.before(() => {
+	execa.sync('rm', ['-rf', HOME]); // start clean slate
 	process.env.DEBUG = 'exbox';
-	process.env.EXBOXTEMP = 'temp-exbox-home';
-});
-
-// cleanup: delete the EXBOXTEMP dir
-test.after(() => {
-	execa('rm', ['-rf', resolve(__dirname, '..', process.env.EXBOXTEMP)]);
+	process.env.EXBOXTEMP = TMP;
 });
 
 test('dummy test', async t => {
