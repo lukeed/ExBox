@@ -5,6 +5,7 @@ var path = require('path');
 // var osenv = require('osenv');
 var cli = require('commander');
 var readPkg = require('read-pkg');
+var child = require('child_process');
 var notifier = require('update-notifier');
 
 // var homedir = path.join(osenv.home(), process.env.EXBOXTEMP || '.exbox');
@@ -34,6 +35,7 @@ cli
 	.usage(' ') // no options
 	.action(function () {
 		debug('initializing ExBox!');
+		child.execSync(['mkdir', '-p', homedir].join(' '));
 	});
 
 cli
