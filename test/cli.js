@@ -21,6 +21,11 @@ test.before(() => {
 	process.env.EXBOXTEMP = 'temp-exbox-home';
 });
 
+// cleanup: delete the EXBOXTEMP dir
+test.after(() => {
+	execa('rm', ['-rf', resolve(__dirname, '..', process.env.EXBOXTEMP)]);
+});
+
 test('dummy test', async t => {
 	const filepath = await write('console.log(0)\n', 'x.js');
 	t.is(fs.readFileSync(filepath, 'utf8').trim(), 'console.log(0)');
