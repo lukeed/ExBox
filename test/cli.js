@@ -1,3 +1,4 @@
+/* eslint node/no-unsupported-features: 0 */
 import fs from 'fs';
 import {resolve} from 'path';
 import write from 'temp-write';
