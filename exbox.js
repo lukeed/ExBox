@@ -33,7 +33,7 @@ cli.version(pkg.version)
 
 cli
 	.command('init')
-	.description('setup ExBox for the first time')
+	.description('Setup ExBox for the first time')
 	.usage(' ') // no options
 	.action(function () {
 		debug('initializing ExBox!');
@@ -58,6 +58,29 @@ cli
 				});
 				console.log('ExBox initialized!');
 			});
+		});
+	});
+
+cli
+	.command('edit')
+	.description('Edit the `ExBox.yaml` file in your default editor.')
+	.usage(' ') // no options
+	.action(function () {
+		// check if `xconfig` exists
+		fs.stat(xconfig, function (err, stat) {
+			if (err || !stat.isFile()) {
+				return errorMessage([
+					'ExBox hasn\'t been initialized.',
+					'Please run `exbox init` first.'
+				]);
+			}
+
+			debug('open `%s` for edits.', xconfig);
+
+			// only open if not in debug
+			if (!process.env.DEBUG) {
+				child.exec(['open', xconfig].join(' '));
+			}
 		});
 	});
 

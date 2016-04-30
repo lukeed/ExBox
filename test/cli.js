@@ -17,6 +17,7 @@ const local = '~/local';
 
 const TMP = '.tmp';
 const HOME = resolve(__dirname, '..', TMP);
+// const CONF = resolve(TMP, 'ExBox.yaml');
 
 // turn on DEBUG messages
 test.before(async () => {
@@ -66,7 +67,13 @@ test('exbox.help: `domain --help` ok', async t => {
 test.serial('exbox.reset: throw before `init`', async t => {
 	const out = await t.throws(execa.stdout(cli, ['reset']));
 	t.regex(out, /Oops/, '`Oops!` error is thrown');
-	t.regex(out, /No need to reset/, 'did not need to reset, no dir exists');
+	t.regex(out, /ExBox hasn't been initialized/, 'has not been initialized');
+});
+
+test.serial('exbox.edit: throw before `init`', async t => {
+	const out = await t.throws(execa.stdout(cli, ['edit']));
+	t.regex(out, /Oops/, '`Oops!` error is thrown');
+	t.regex(out, /ExBox hasn't been initialized/, 'has not been initialized');
 });
 
 test.serial('exbox.init: first', async t => {
@@ -114,6 +121,11 @@ test.serial('exbox.reset: with `--force` flag', async t => {
 
 	// cleanup, rerun `init`
 	await execa(cli, ['init']);
+});
+
+test('exbox.edit: debugger', async t => {
+	const out = await execa.stdout(cli, ['edit']);
+	t.regex(out, /open/, 'shows `open` debug message');
 });
 
 test('exbox.domain: requires `site`', async t => {
