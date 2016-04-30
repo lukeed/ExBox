@@ -62,6 +62,33 @@ cli
 	});
 
 cli
+	.command('reset')
+	.description('Deletes existing ExBox configuration files.')
+	.option('-f, --force', 'Do not save old config files.')
+	.action(function (opts) {
+		// check if `xconfig` exists
+		fs.stat(xconfig, function (err, stat) {
+			if (err || !stat.isFile()) {
+				return errorMessage([
+					'ExBox hasn\'t been initialized.',
+					'No need to reset!'
+				]);
+			}
+
+			if (opts.force) {
+				return child.exec(['rm', '-rf', homedir], function () {
+					resetMessage('deleted');
+				});
+			}
+
+			var dest = homedir.concat('-old');
+			child.exec(['mv', homedir, dest].join(' '), function () {
+				resetMessage('moved to `' + dest + '`');
+			});
+		});
+	});
+
+cli
 	.command('domain <site> <dir>')
 	.description('Map a Domain to a VM directory')
 	.option('--ssl', '     Enable SSL on this domain')
