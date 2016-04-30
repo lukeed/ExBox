@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-// var fs = require('fs');
+var fs = require('fs');
 var path = require('path');
 var child = require('child_process');
 // var osenv = require('osenv');
@@ -11,7 +11,7 @@ var notifier = require('update-notifier');
 
 // var homedir = path.join(osenv.home(), process.env.EXBOXTEMP || '.exbox');
 var homedir = path.join(__dirname, process.env.EXBOXTEMP || '.exbox');
-// var xconfig = path.join(homedir, 'ExBox.yaml');
+var xconfig = path.join(homedir, 'ExBox.yaml');
 
 // up to date?
 var pkg = readPkg.sync(__dirname);
@@ -38,13 +38,26 @@ cli
 	.action(function () {
 		debug('initializing ExBox!');
 
-		// create `.exbox` home directory
-		child.execSync(['mkdir', '-p', homedir].join(' '));
+		// check to see if already initialized
+		fs.stat(xconfig, function (_, stats) {
+			// exists, exit.
+			if (stats && stats.isFile()) {
+				return errorMessage([
+					'ExBox has already been initialized!',
+					'In order to re-initialize, you must delete your `.exbox` directory.',
+					'Run `exbox reset` before re-initializing.'
+				]);
+			}
 
-		// copy files to `.exbox`
-		var stubs = path.join(__dirname, 'stubs');
-		['ExBox.yaml', 'after.sh', 'aliases'].forEach(function (file) {
-			child.exec(['cp', '-i', path.join(stubs, file), homedir].join(' '));
+			// create `.exbox` home directory
+			child.exec(['mkdir', '-p', homedir].join(' '), function () {
+				// copy files to `.exbox`
+				var stubs = path.join(__dirname, 'stubs');
+				['ExBox.yaml', 'after.sh', 'aliases'].forEach(function (file) {
+					child.exec(['cp', '-f', path.join(stubs, file), homedir].join(' '));
+				});
+				console.log('ExBox initialized!');
+			});
 		});
 	});
 
@@ -87,4 +100,30 @@ function addExamples(cmd, arr) {
 		console.log(['    $ exbox', cmd, el].join(' '));
 	});
 	console.log();
+}
+
+/**
+ * Log a Reset Status message to the Console
+ * @param  {String} msg
+ * @param  {Array}  args
+ */
+function resetMessage(msg) {
+	console.log('\n  ExBox Reset:\n    Existing config files have been %s.', msg);
+	console.log('    ExBox has been reset!\n');
+}
+
+/**
+ * Log an `Oops!` message to the Console
+ * @param  {Array} arr  Array of Strings
+ */
+function errorMessage(arr) {
+	arr = arr.map(function (el) {
+		return '    ' + el;
+	});
+
+	console.log(
+		['', '  Oops!'].concat(arr, '').join('\n')
+	);
+
+	process.exit(1);
 }

@@ -70,12 +70,18 @@ test('exbox.help: `domain --help` ok', async t => {
 
 test('exbox.init', async t => {
 	const out = await execa.stdout(cli, ['init']);
-	t.is(out, '[DEBUG] initializing ExBox!', 'debugger');
+	t.is(out, '[DEBUG] initializing ExBox!\nExBox initialized!', 'debugger + success msg');
 
 	t.true(fs.existsSync(HOME), '`homedir` exists');
 
 	const files = fs.readdirSync(HOME);
 	t.true(files.length > 1, '`homedir` has files');
+
+	// attempt a second `init`
+	execa('exbox init').catch(err => {
+		t.throws(err);
+		t.is(err.cmd, 'exbox init', 'trying to `init` again will throw');
+	});
 });
 
 test('exbox.domain: requires `site`', async t => {
