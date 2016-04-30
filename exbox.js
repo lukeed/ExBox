@@ -76,7 +76,7 @@ cli
 			}
 
 			if (opts.force) {
-				return child.exec(['rm', '-rf', homedir], function () {
+				return child.exec(['rm', '-rf', homedir].join(' '), function () {
 					resetMessage('deleted');
 				});
 			}
