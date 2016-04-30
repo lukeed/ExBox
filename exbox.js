@@ -33,7 +33,7 @@ cli
 	.description('setup ExBox for the first time')
 	.usage(' ') // no options
 	.action(function () {
-		console.log('inside init!');
+		debug('initializing ExBox!');
 	});
 
 cli

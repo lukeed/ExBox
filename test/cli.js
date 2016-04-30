@@ -63,9 +63,9 @@ test('exbox.help: `domain --help` ok', async t => {
 	t.regex(out, /Examples:/);
 });
 
-test('exbox.init', async t => {
+test('exbox.init: debugger', async t => {
 	const out = await execa.stdout(cli, ['init']);
-	t.is(out, 'inside init!');
+	t.is(out, '[DEBUG] initializing ExBox!');
 });
 
 test('exbox.domain: requires `site`', async t => {
@@ -78,7 +78,7 @@ test('exbox.domain: requires `dir`', async t => {
 	t.regex(err.message, /error: missing required argument/);
 });
 
-test('exbox.domain: log success', async t => {
+test('exbox.domain: debugger', async t => {
 	const out = await execa.stdout(cli, ['domain', site, dir]);
 	t.is(out, `[DEBUG] domain: use ssl: false. site: ${site}. dir: ${dir}.`);
 });
@@ -93,7 +93,7 @@ test('exbox.folder: requires `dir`', async t => {
 	t.regex(err.message, /error: missing required argument/);
 });
 
-test('exbox.folder: log success', async t => {
+test('exbox.folder: debugger', async t => {
 	const out = await execa.stdout(cli, ['folder', local, dir]);
 	t.is(out, `[DEBUG] folder: local: ${local}. dir: ${dir}.`);
 });
