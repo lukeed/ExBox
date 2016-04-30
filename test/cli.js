@@ -19,8 +19,8 @@ const TMP = '.tmp';
 const HOME = resolve(__dirname, '..', TMP);
 
 // turn on DEBUG messages
-test.before(() => {
-	execa.sync('rm', ['-rf', HOME]); // start clean slate
+test.before(async () => {
+	await execa('rm', ['-rf', HOME]); // start clean slate
 	process.env.DEBUG = 'exbox';
 	process.env.EXBOXTEMP = TMP;
 });
