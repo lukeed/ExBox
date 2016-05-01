@@ -32,9 +32,11 @@
   "dependencies": {
     "commander": "^2.9.0",
     "debug": "^2.2.0",
+    "load-json-file": "^1.1.0",
     "osenv": "^0.1.3",
     "read-pkg": "^1.1.0",
-    "update-notifier": "^0.6.3"
+    "update-notifier": "^0.6.3",
+    "write-json-file": "^1.1.0"
   },
   "devDependencies": {
     "ava": "^0.14.0",
@@ -47,13 +49,27 @@
     "node": ">=0.10"
   },
   "xo": {
-    "plugins": ["node"],
+    "plugins": [
+      "node"
+    ],
     "rules": {
-      "node/no-unsupported-features": [2, {"version": 0.10, "ignores": ["blockScopedFunctions"]}]
+      "node/no-unsupported-features": [
+        2,
+        {
+          "version": 0.1,
+          "ignores": [
+            "blockScopedFunctions"
+          ]
+        }
+      ]
     },
-    "overrides": [{
-      "files": "test/*.js",
-      "rules": {"node/no-unsupported-features": 0}
-    }]
+    "overrides": [
+      {
+        "files": "test/*.js",
+        "rules": {
+          "node/no-unsupported-features": 0
+        }
+      }
+    ]
   }
 }
