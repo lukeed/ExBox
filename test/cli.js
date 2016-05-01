@@ -146,7 +146,7 @@ test('exbox.domain: requires `dir`', async t => {
 
 test('exbox.domain: debugger', async t => {
 	const out = await execa.stdout(cli, ['domain', site, dir]);
-	t.is(out, `[DEBUG] domain: use ssl: false. site: ${site}. dir: ${dir}.`);
+	t.regex(out, /DEBUG/, 'enter the `domain` action');
 });
 
 test('exbox.folder: requires `local`', async t => {
