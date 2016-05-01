@@ -26,6 +26,71 @@ test.before(async () => {
 	process.env.EXBOXTEMP = TMP;
 });
 
+// run CMD + OPTS for each CMD
+const throwBeforeInit = async (t, args) => {
+	const out = await t.throws(execa.stdout(cli, args));
+	t.regex(out, /Oops/, '`Oops!` error is thrown');
+	t.regex(out, /been initialized/, 'has not been initialized');
+};
+
+test.serial('throw errors before `init`', async t => {
+	t.plan(9);
+
+	const tests = [
+		['reset'], ['edit'], ['folder', local, dir]
+	];
+
+	for (let args of tests) {
+		await throwBeforeInit(t, args);
+	}
+});
+
+test.serial('exbox.init: first', async t => {
+	const out = await execa.stdout(cli, ['init']);
+	t.regex(out, /initialized/, 'debugger + success msg');
+
+	t.true(fs.existsSync(HOME), '`homedir` exists');
+
+	const files = fs.readdirSync(HOME);
+	t.true(files.length > 1, '`homedir` has files');
+
+	// attempt a second `init`
+	execa(cli, ['init']).catch(err => {
+		t.throws(err);
+		t.is(err.cmd, 'exbox init', 'trying to `init` again will throw');
+	});
+});
+
+test.serial('exbox.init: throw on repeat', async t => {
+	t.plan(3);
+	await throwBeforeInit(t, ['init']);
+});
+
+test.serial('exbox.reset: after `init`', async t => {
+	const out = await execa.stdout(cli, ['reset']);
+	t.regex(out, /moved to/, 'config files were moved');
+	t.regex(out, /ExBox has been reset/, 'successfully reset');
+
+	const old = HOME.concat('-old');
+	const files = fs.readdirSync(old);
+	t.true(files.length > 0, 'old files were moved to a new directory');
+
+	// cleanup, delete `old`
+	await execa('rm', ['-rf', old]);
+
+	// cleanup, rerun `init`
+	await execa(cli, ['init']);
+});
+
+test.serial('exbox.reset: with `--force` flag', async t => {
+	const out = await execa.stdout(cli, ['reset', '-f']);
+	t.regex(out, /deleted/, 'config files were deleted.');
+	t.regex(out, /ExBox has been reset/, 'successfully reset');
+
+	// cleanup, rerun `init`
+	await execa(cli, ['init']);
+});
+
 test('exbox.version: `--version` ok', async t => {
 	const out = await execa.stdout(cli, ['--version']);
 	t.is(out, ver, 'works: full `--version`');
@@ -64,68 +129,9 @@ test('exbox.help: `domain --help` ok', async t => {
 	t.regex(out, /Examples:/);
 });
 
-test.serial('exbox.reset: throw before `init`', async t => {
-	const out = await t.throws(execa.stdout(cli, ['reset']));
-	t.regex(out, /Oops/, '`Oops!` error is thrown');
-	t.regex(out, /ExBox hasn't been initialized/, 'has not been initialized');
-});
-
-test.serial('exbox.edit: throw before `init`', async t => {
-	const out = await t.throws(execa.stdout(cli, ['edit']));
-	t.regex(out, /Oops/, '`Oops!` error is thrown');
-	t.regex(out, /ExBox hasn't been initialized/, 'has not been initialized');
-});
-
-test.serial('exbox.init: first', async t => {
-	const out = await execa.stdout(cli, ['init']);
-	t.is(out, '[DEBUG] initializing ExBox!\nExBox initialized!', 'debugger + success msg');
-
-	t.true(fs.existsSync(HOME), '`homedir` exists');
-
-	const files = fs.readdirSync(HOME);
-	t.true(files.length > 1, '`homedir` has files');
-
-	// attempt a second `init`
-	execa(cli, ['init']).catch(err => {
-		t.throws(err);
-		t.is(err.cmd, 'exbox init', 'trying to `init` again will throw');
-	});
-});
-
-test.serial('exbox.init: throw on repeat', async t => {
-	const out = await t.throws(execa.stdout(cli, ['init']));
-	t.regex(out, /Oops/, '`Oops!` error is thrown');
-	t.regex(out, /ExBox has already been initialized/, 'already initialized');
-});
-
-test.serial('exbox.reset: after `init`', async t => {
-	const out = await execa.stdout(cli, ['reset']);
-	t.regex(out, /moved to/, 'config files were moved');
-	t.regex(out, /ExBox has been reset/, 'successfully reset');
-
-	const old = HOME.concat('-old');
-	const files = fs.readdirSync(old);
-	t.true(files.length > 0, 'old files were moved to a new directory');
-
-	// cleanup, delete `old`
-	await execa('rm', ['-rf', old]);
-
-	// cleanup, rerun `init`
-	await execa(cli, ['init']);
-});
-
-test.serial('exbox.reset: with `--force` flag', async t => {
-	const out = await execa.stdout(cli, ['reset', '-f']);
-	t.regex(out, /deleted/, 'config files were deleted.');
-	t.regex(out, /ExBox has been reset/, 'successfully reset');
-
-	// cleanup, rerun `init`
-	await execa(cli, ['init']);
-});
-
 test('exbox.edit: debugger', async t => {
 	const out = await execa.stdout(cli, ['edit']);
-	t.regex(out, /open/, 'shows `open` debug message');
+	t.regex(out, /DEBUG/, 'shows `open` debug message');
 });
 
 test('exbox.domain: requires `site`', async t => {
@@ -155,5 +161,5 @@ test('exbox.folder: requires `dir`', async t => {
 
 test('exbox.folder: debugger', async t => {
 	const out = await execa.stdout(cli, ['folder', local, dir]);
-	t.is(out, `[DEBUG] folder: local: ${local}. dir: ${dir}.`);
+	t.regex(out, /DEBUG/, 'shows `folder` debug message');
 });
