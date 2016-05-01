@@ -9,9 +9,9 @@ var cli = require('commander');
 var readPkg = require('read-pkg');
 var notifier = require('update-notifier');
 
-// var homedir = path.join(osenv.home(), process.env.EXBOXTEMP || '.exbox');
-var homedir = path.join(__dirname, process.env.EXBOXTEMP || '.exbox');
-var xconfig = path.join(homedir, 'ExBox.yaml');
+// var xhome = path.join(osenv.home(), process.env.EXBOXTEMP || '.exbox');
+var xhome = path.join(__dirname, process.env.EXBOXTEMP || '.exbox');
+var xconf = path.join(xhome, 'ExBox.yaml');
 
 // up to date?
 var pkg = readPkg.sync(__dirname);
@@ -39,7 +39,7 @@ cli
 		debug('initializing ExBox!');
 
 		// check to see if already initialized
-		fs.stat(xconfig, function (_, stats) {
+		fs.stat(xconf, function (_, stats) {
 			// exists, exit.
 			if (stats && stats.isFile()) {
 				return errorMessage([
@@ -50,11 +50,11 @@ cli
 			}
 
 			// create `.exbox` home directory
-			child.exec(['mkdir', '-p', homedir].join(' '), function () {
+			child.exec(['mkdir', '-p', xhome].join(' '), function () {
 				// copy files to `.exbox`
 				var stubs = path.join(__dirname, 'stubs');
 				['ExBox.yaml', 'after.sh', 'aliases'].forEach(function (file) {
-					child.exec(['cp', '-f', path.join(stubs, file), homedir].join(' '));
+					child.exec(['cp', '-f', path.join(stubs, file), xhome].join(' '));
 				});
 				console.log('ExBox initialized!');
 			});
@@ -66,8 +66,8 @@ cli
 	.description('Edit the `ExBox.yaml` file in your default editor.')
 	.usage(' ') // no options
 	.action(function () {
-		// check if `xconfig` exists
-		fs.stat(xconfig, function (err, stat) {
+		// check if `xconf` exists
+		fs.stat(xconf, function (err, stat) {
 			if (err || !stat.isFile()) {
 				return errorMessage([
 					'ExBox hasn\'t been initialized.',
@@ -75,10 +75,10 @@ cli
 				]);
 			}
 
-			debug('open `%s` for edits.', xconfig);
+			debug('open `%s` for edits.', xconf);
 
 			// only open if not in debug
-			child.exec([process.env.DEBUG ? 'ls' : 'open', xconfig].join(' '));
+			child.exec([process.env.DEBUG ? 'ls' : 'open', xconf].join(' '));
 		});
 	});
 
@@ -87,8 +87,8 @@ cli
 	.description('Deletes existing ExBox configuration files.')
 	.option('-f, --force', 'Do not save old config files.')
 	.action(function (opts) {
-		// check if `xconfig` exists
-		fs.stat(xconfig, function (err, stat) {
+		// check if `xconf` exists
+		fs.stat(xconf, function (err, stat) {
 			if (err || !stat.isFile()) {
 				return errorMessage([
 					'ExBox hasn\'t been initialized.',
@@ -97,13 +97,13 @@ cli
 			}
 
 			if (opts.force) {
-				return child.exec(['rm', '-rf', homedir].join(' '), function () {
+				return child.exec(['rm', '-rf', xhome].join(' '), function () {
 					resetMessage('deleted');
 				});
 			}
 
-			var dest = homedir.concat('-old');
-			child.exec(['mv', homedir, dest].join(' '), function () {
+			var dest = xhome.concat('-old');
+			child.exec(['mv', xhome, dest].join(' '), function () {
 				resetMessage('moved to `' + dest + '`');
 			});
 		});
