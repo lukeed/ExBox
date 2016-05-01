@@ -17,7 +17,7 @@ const local = '~/local';
 
 const TMP = '.tmp';
 const HOME = resolve(__dirname, '..', TMP);
-// const CONF = resolve(TMP, 'ExBox.yaml');
+// const CONF = resolve(TMP, 'ExBox.json');
 
 // turn on DEBUG messages
 test.before(async () => {
