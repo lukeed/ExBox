@@ -67,12 +67,7 @@ cli
 	.description('Edit the `' + xfile + '` file in your default editor.')
 	.usage(' ') // no options
 	.action(function () {
-		var err = [
-			'ExBox hasn\'t been initialized.',
-			'Please run `exbox init` first.'
-		];
-
-		ifExists(err, function () {
+		ifExists([], function () {
 			debug('open `%s` for edits.', xconf);
 
 			// only open if not in debug
@@ -125,12 +120,7 @@ cli
 	.action(function (local, dir) {
 		debug('folder: local: %s. dir: %s.', local, dir);
 
-		var err = [
-			'ExBox hasn\'t been initialized.',
-			'Please run `exbox init` first.'
-		];
-
-		ifExists(err, function () {
+		ifExists([], function () {
 			// read the file
 			loadJson(xconf).then(function (data) {
 				// add the new folder obj
@@ -210,7 +200,12 @@ function ifExists(onFalse, onTrue) {
 	fs.stat(xconf, function (err, stat) {
 		// doesn't exist?
 		if (err || !stat.isFile()) {
-			return Array.isArray(onFalse) ? errorMessage(onFalse) : onFalse();
+			if (Array.isArray(onFalse)) {
+				// set default `init` error message
+				onFalse = onFalse.length ? onFalse : ['ExBox hasn\'t been initialized.', 'Please run `exbox init` first.'];
+				return errorMessage(onFalse);
+			}
+			return onFalse();
 		}
 
 		return onTrue();
