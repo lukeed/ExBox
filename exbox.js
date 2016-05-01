@@ -78,9 +78,7 @@ cli
 			debug('open `%s` for edits.', xconfig);
 
 			// only open if not in debug
-			if (!process.env.DEBUG) {
-				child.exec(['open', xconfig].join(' '));
-			}
+			child.exec([process.env.DEBUG ? 'ls' : 'open', xconfig].join(' '));
 		});
 	});
 
