@@ -106,6 +106,10 @@ cli
 	.action(function (site, dir, opts) {
 		var ssl = opts.ssl || false;
 		debug('domain: use ssl: %s. site: %s. dir: %s.', ssl, site, dir);
+		ifExists([], function () {
+			writeToConf('sites', {map: site, to: dir});
+		});
+		// @todo: do nginx stuff, use `ssl`
 	}).on('--help', addExamples.bind(null, 'domain', [
 		'phoenix.dev /home/vagrant/code/phoenix',
 		'hello-world.app /home/vagrant/code/hello-world',
