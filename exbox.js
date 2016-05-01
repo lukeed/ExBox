@@ -160,16 +160,35 @@ cli
 cli.parse(process.argv);
 
 /**
+ * Format & Write a msg to Console
+ * @param  {String}  title
+ * @param  {Array}   arr
+ * @param  {Boolean} useTop    Use a '\n' to start?
+ */
+function showMessage(title, arr, useTop) {
+	useTop = useTop === undefined ? true : useTop;
+	title = '  ' + title;
+
+	arr = arr.map(function (el) {
+		return '    ' + el;
+	});
+
+	console.log(
+		(useTop ? [''] : []).concat(title, arr, '').join('\n')
+	);
+}
+
+/**
  * Log examples to the Console, with formatting
  * @param {String} cmd    The name of the command in question
  * @param {Array} arr     An array of example usages
  */
 function addExamples(cmd, arr) {
-	console.log('  Examples: \n');
-	arr.forEach(function (el) {
-		console.log(['    $ exbox', cmd, el].join(' '));
+	arr = arr.map(function (el) {
+		return ['$ exbox', cmd, el].join(' ');
 	});
-	console.log();
+
+	return showMessage('Examples: \n', arr, false);
 }
 
 /**
@@ -178,8 +197,10 @@ function addExamples(cmd, arr) {
  * @param  {Array}  args
  */
 function resetMessage(msg) {
-	console.log('\n  ExBox Reset:\n    Existing config files have been %s.', msg);
-	console.log('    ExBox has been reset!\n');
+	return showMessage('ExBox Reset:', [
+		'Existing config files have been ' + msg,
+		'ExBox has been reset!'
+	]);
 }
 
 /**
@@ -187,13 +208,6 @@ function resetMessage(msg) {
  * @param  {Array} arr  Array of Strings
  */
 function errorMessage(arr) {
-	arr = arr.map(function (el) {
-		return '    ' + el;
-	});
-
-	console.log(
-		['', '  Oops!'].concat(arr, '').join('\n')
-	);
-
+	showMessage('Oops!', arr);
 	process.exit(1);
 }
