@@ -7,28 +7,28 @@ provider: virtualbox
 authorize: ~/.ssh/id_rsa.pub
 
 keys:
-    - ~/.ssh/id_rsa
+  - ~/.ssh/id_rsa
 
 folders:
-    - map: ~/code
-      to: /home/vagrant/code
+  - map: ~/code
+    to: /home/vagrant/code
 
 sites:
-    - map: exbox.app
-      to: /home/vagrant/code/phoenix
+  - map: exbox.app
+    to: /home/vagrant/code/phoenix
 
 databases:
-    - exbox
+  - exbox
 
 # blackfire:
-#     - id: foo
-#       token: bar
-#       client-id: foo
-#       client-token: bar
+#   - id: foo
+#     token: bar
+#     client-id: foo
+#     client-token: bar
 
 # ports:
-#     - send: 50000
-#       to: 5000
-#     - send: 7777
-#       to: 777
-#       protocol: udp
+#   - send: 50000
+#     to: 5000
+#   - send: 7777
+#     to: 777
+#     protocol: udp
