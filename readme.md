@@ -4,6 +4,12 @@
 
 **WIP** - not ready for use yet
 
+## Setup
+
+Before launching your ExBox environment, you must install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/downloads.html). Both of these software packages provide easy-to-use visual installers for all popular operating systems.
+
+You must also have [Node.js](https://nodejs.org/en/download/) installed in order to download and use ExBox. Node version `0.10` and above is supported!
+
 ## Install
 
 ```
