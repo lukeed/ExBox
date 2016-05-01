@@ -28,7 +28,7 @@ debug.log = function () {
 };
 
 cli.version(pkg.version)
-	.usage('<command> [args...] [options]')
+	.usage('<command> [options] [args...]')
 	.on('--help', function () {
 		console.log('  For additional help with any command, run `exbox COMMAND -h`');
 		console.log();
@@ -87,8 +87,8 @@ cli
 
 cli
 	.command('reset')
-	.description('Deletes existing ExBox configuration files.')
-	.option('-f, --force', 'Do not save old config files.')
+	.description('Reset existing ExBox configuration files.')
+	.option('-d, --delete', 'Delete files instead of renaming.')
 	.action(function (opts) {
 		// check if `xconf` exists
 		fs.stat(xconf, function (err, stat) {
@@ -99,7 +99,7 @@ cli
 				]);
 			}
 
-			if (opts.force) {
+			if (opts.delete) {
 				return child.exec(['rm', '-rf', xhome].join(' '), function () {
 					resetMessage('deleted');
 				});

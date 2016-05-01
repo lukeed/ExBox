@@ -82,8 +82,8 @@ test.serial('exbox.reset: after `init`', async t => {
 	await execa(cli, ['init']);
 });
 
-test.serial('exbox.reset: with `--force` flag', async t => {
-	const out = await execa.stdout(cli, ['reset', '-f']);
+test.serial('exbox.reset: with `--delete` flag', async t => {
+	const out = await execa.stdout(cli, ['reset', '-d']);
 	t.regex(out, /deleted/, 'config files were deleted.');
 	t.regex(out, /ExBox has been reset/, 'successfully reset');
 
