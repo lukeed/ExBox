@@ -214,14 +214,12 @@ function ifExists(onFalse, onTrue) {
  * @param  {Object} obj   The data object to add
  */
 function writeToConf(key, obj) {
-	var msg = capitalize(key).slice(0, -1); // remove trailing 's'
-
 	// read the file
 	loadJson(xconf).then(function (data) {
 		data[key].push(obj); // add new obj
 		// write the changes
 		writeJson(xconf, data).then(function () {
-			return showMessage(['Added ', msg, '!'].join(''));
+			console.log('\n  Added %s!\n', capitalize(key).slice(0, -1)); // remove trailing 's'
 		});
 	});
 }
