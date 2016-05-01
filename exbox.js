@@ -121,15 +121,7 @@ cli
 		debug('folder: local: %s. dir: %s.', local, dir);
 
 		ifExists([], function () {
-			// read the file
-			loadJson(xconf).then(function (data) {
-				// add the new folder obj
-				data.folders.push({map: local, to: dir});
-				// write the changes
-				writeJson(xconf, data).then(function () {
-					console.log('Folder added!'); // @todo
-				});
-			});
+			writeToConf('folders', {map: local, to: dir});
 		});
 	}).on('--help', addExamples.bind(null, 'folder', [
 		'~/code/project /home/vagrant/code/project',
@@ -210,4 +202,31 @@ function ifExists(onFalse, onTrue) {
 
 		return onTrue();
 	});
+}
+
+/**
+ * Write a Data Object to the `xconf` file
+ * @param  {String} key   The data-key name
+ * @param  {Object} obj   The data object to add
+ */
+function writeToConf(key, obj) {
+	var msg = capitalize(key).slice(0, -1); // remove trailing 's'
+
+	// read the file
+	loadJson(xconf).then(function (data) {
+		data[key].push(obj); // add new obj
+		// write the changes
+		writeJson(xconf, data).then(function () {
+			return showMessage(['Added ', msg, '!'].join(''));
+		});
+	});
+}
+
+/**
+ * Capitalize a String/word
+ * @param  {String} str
+ * @return {String}
+ */
+function capitalize(str) {
+	return str[0].toUpperCase() + str.slice(1);
 }
