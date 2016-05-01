@@ -9,9 +9,10 @@ var cli = require('commander');
 var readPkg = require('read-pkg');
 var notifier = require('update-notifier');
 
+var xfile = 'ExBox.json';
 // var xhome = path.join(osenv.home(), process.env.EXBOXTEMP || '.exbox');
 var xhome = path.join(__dirname, process.env.EXBOXTEMP || '.exbox');
-var xconf = path.join(xhome, 'ExBox.yaml');
+var xconf = path.join(xhome, xfile);
 
 // up to date?
 var pkg = readPkg.sync(__dirname);
@@ -53,7 +54,7 @@ cli
 			child.exec(['mkdir', '-p', xhome].join(' '), function () {
 				// copy files to `.exbox`
 				var stubs = path.join(__dirname, 'stubs');
-				['ExBox.yaml', 'after.sh', 'aliases'].forEach(function (file) {
+				[xfile, 'after.sh', 'aliases'].forEach(function (file) {
 					child.exec(['cp', '-f', path.join(stubs, file), xhome].join(' '));
 				});
 				console.log('ExBox initialized!');
@@ -63,7 +64,7 @@ cli
 
 cli
 	.command('edit')
-	.description('Edit the `ExBox.yaml` file in your default editor.')
+	.description('Edit the `' + xfile + '` file in your default editor.')
 	.usage(' ') // no options
 	.action(function () {
 		// check if `xconf` exists
