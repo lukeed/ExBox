@@ -41,17 +41,7 @@ cli
 	.action(function () {
 		debug('initializing ExBox!');
 
-		// check to see if already initialized
-		fs.stat(xconf, function (_, stats) {
-			// exists, exit.
-			if (stats && stats.isFile()) {
-				return errorMessage([
-					'ExBox has already been initialized!',
-					'In order to re-initialize, you must delete your `.exbox` directory.',
-					'Run `exbox reset` before re-initializing.'
-				]);
-			}
-
+		var onFalse = function () {
 			// create `.exbox` home directory
 			child.exec(['mkdir', '-p', xhome].join(' '), function () {
 				// copy files to `.exbox`
@@ -61,6 +51,14 @@ cli
 				});
 				console.log('ExBox initialized!');
 			});
+		};
+
+		ifExists(onFalse, function () {
+			return errorMessage([
+				'ExBox has already been initialized!',
+				'In order to re-initialize, you must delete your `.exbox` directory.',
+				'Run `exbox reset` before re-initializing.'
+			]);
 		});
 	});
 
@@ -69,15 +67,12 @@ cli
 	.description('Edit the `' + xfile + '` file in your default editor.')
 	.usage(' ') // no options
 	.action(function () {
-		// check if `xconf` exists
-		fs.stat(xconf, function (err, stat) {
-			if (err || !stat.isFile()) {
-				return errorMessage([
-					'ExBox hasn\'t been initialized.',
-					'Please run `exbox init` first.'
-				]);
-			}
+		var err = [
+			'ExBox hasn\'t been initialized.',
+			'Please run `exbox init` first.'
+		];
 
+		ifExists(err, function () {
 			debug('open `%s` for edits.', xconf);
 
 			// only open if not in debug
@@ -90,15 +85,12 @@ cli
 	.description('Reset existing ExBox configuration files.')
 	.option('-d, --delete', 'Delete files instead of renaming.')
 	.action(function (opts) {
-		// check if `xconf` exists
-		fs.stat(xconf, function (err, stat) {
-			if (err || !stat.isFile()) {
-				return errorMessage([
-					'ExBox hasn\'t been initialized.',
-					'No need to reset!'
-				]);
-			}
+		var err = [
+			'ExBox hasn\'t been initialized.',
+			'No need to reset!'
+		];
 
+		ifExists(err, function () {
 			if (opts.delete) {
 				return child.exec(['rm', '-rf', xhome].join(' '), function () {
 					resetMessage('deleted');
@@ -133,15 +125,12 @@ cli
 	.action(function (local, dir) {
 		debug('folder: local: %s. dir: %s.', local, dir);
 
-		// check if `xconf` exists
-		fs.stat(xconf, function (err, stat) {
-			if (err || !stat.isFile()) {
-				return errorMessage([
-					'ExBox hasn\'t been initialized.',
-					'Please run `exbox init` first.'
-				]);
-			}
+		var err = [
+			'ExBox hasn\'t been initialized.',
+			'Please run `exbox init` first.'
+		];
 
+		ifExists(err, function () {
 			// read the file
 			loadJson(xconf).then(function (data) {
 				// add the new folder obj
@@ -163,10 +152,10 @@ cli.parse(process.argv);
  * Format & Write a msg to Console
  * @param  {String}  title
  * @param  {Array}   arr
- * @param  {Boolean} useTop    Use a '\n' to start?
+ * @param  {Boolean} padTop    Use a '\n' to start?
  */
-function showMessage(title, arr, useTop) {
-	useTop = useTop === undefined ? true : useTop;
+function showMessage(title, arr, padTop) {
+	padTop = padTop === undefined ? true : padTop;
 	title = '  ' + title;
 
 	arr = arr.map(function (el) {
@@ -174,7 +163,7 @@ function showMessage(title, arr, useTop) {
 	});
 
 	console.log(
-		(useTop ? [''] : []).concat(title, arr, '').join('\n')
+		(padTop ? [''] : []).concat(title, arr, '').join('\n')
 	);
 }
 
@@ -210,4 +199,20 @@ function resetMessage(msg) {
 function errorMessage(arr) {
 	showMessage('Oops!', arr);
 	process.exit(1);
+}
+
+/**
+ * Check if `xconf` file exists. Run callback accordingly.
+ * @param  {Function|Array} onFalse   Array = Error Messages
+ * @param  {Function}       onTrue
+ */
+function ifExists(onFalse, onTrue) {
+	fs.stat(xconf, function (err, stat) {
+		// doesn't exist?
+		if (err || !stat.isFile()) {
+			return Array.isArray(onFalse) ? errorMessage(onFalse) : onFalse();
+		}
+
+		return onTrue();
+	});
 }
