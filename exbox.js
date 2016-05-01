@@ -7,6 +7,8 @@ var child = require('child_process');
 // var osenv = require('osenv');
 var cli = require('commander');
 var readPkg = require('read-pkg');
+var loadJson = require('load-json-file');
+var writeJson = require('write-json-file');
 var notifier = require('update-notifier');
 
 var xfile = 'ExBox.json';
@@ -117,7 +119,6 @@ cli
 	.action(function (site, dir, opts) {
 		var ssl = opts.ssl || false;
 		debug('domain: use ssl: %s. site: %s. dir: %s.', ssl, site, dir);
-		//
 	}).on('--help', addExamples.bind(null, 'domain', [
 		'phoenix.dev /home/vagrant/code/phoenix',
 		'hello-world.app /home/vagrant/code/hello-world',
@@ -131,6 +132,26 @@ cli
 	.usage('<local> <dir>') // no options
 	.action(function (local, dir) {
 		debug('folder: local: %s. dir: %s.', local, dir);
+
+		// check if `xconf` exists
+		fs.stat(xconf, function (err, stat) {
+			if (err || !stat.isFile()) {
+				return errorMessage([
+					'ExBox hasn\'t been initialized.',
+					'Please run `exbox init` first.'
+				]);
+			}
+
+			// read the file
+			loadJson(xconf).then(function (data) {
+				// add the new folder obj
+				data.folders.push({map: local, to: dir});
+				// write the changes
+				writeJson(xconf, data).then(function () {
+					console.log('Folder added!'); // @todo
+				});
+			});
+		});
 	}).on('--help', addExamples.bind(null, 'folder', [
 		'~/code/project /home/vagrant/code/project',
 		'~/code/another/project /home/vagrant/code/project2'
